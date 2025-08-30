@@ -21,15 +21,20 @@ async def handle_message(update, context):
             except Exception:
                 cleaned_text = cleaned_text.replace(u, f"[error resolviendo {u}]")
 
-        # determinar el nombre del remitente
         chat_type = update.effective_chat.type
         if chat_type in ["group", "supergroup"]:
             origin_name = update.message.sender_chat.title if hasattr(update.message, 'sender_chat') else "Group"
             if origin_name == "Group" and getattr(update.message.sender_chat, "username", None):
                 origin_name = f"@{update.message.sender_chat.username}"
             message_text = f"🔗 Enlace limpio compartido por {origin_name}:\n{cleaned_text}"
+
+            # borrar el mensaje original con la URL sucia
+            try:
+                await update.message.delete()
+            except Exception as e:
+                print(f"No pude borrar el mensaje: {e}")
         else:
-            # chat privado: mostrar solo el mensaje limpio
+            # chat privado
             message_text = f"🔗 Enlace limpio:\n{cleaned_text}"
 
         # enviar el mensaje limpio
@@ -39,5 +44,4 @@ app = Application.builder().token("8308810639:AAGtXhX1Iq-MChYnrCmOVwblJsgKXxx8WS
 app.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, handle_message))
 
 app.run_polling()
-
 
