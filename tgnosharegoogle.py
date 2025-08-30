@@ -40,7 +40,7 @@ async def handle_message(update, context):
         # enviar el mensaje limpio
         await context.bot.send_message(chat_id=update.effective_chat.id, text=message_text)
 
-app = Application.builder().token("8308810639:AAGtXhX1Iq-MChYnrCmOVwblJsgKXxx8WSw").build()
+app = Application.builder().token("TOKEN_AQUI").build()
 app.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, handle_message))
 
 app.run_polling()
